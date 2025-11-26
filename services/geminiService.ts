@@ -1,12 +1,16 @@
 import { GoogleGenAI } from "@google/genai";
 
-// Initialize Gemini
-// Note: In a real extension, this might come from VS Code configuration settings
+let genAI: GoogleGenAI | null = null;
+
+export const initializeGemini = (apiKey: string) => {
+  genAI = new GoogleGenAI({ apiKey });
+};
+
 const getAiClient = () => {
-  if (!process.env.API_KEY) {
-    throw new Error("API Key not found. Please set process.env.API_KEY");
+  if (!genAI) {
+    throw new Error("Gemini client not initialized. API key might be missing from VS Code settings.");
   }
-  return new GoogleGenAI({ apiKey: process.env.API_KEY });
+  return genAI;
 };
 
 export const analyzeAnnotation = async (base64Image: string, prompt: string) => {

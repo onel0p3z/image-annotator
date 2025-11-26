@@ -2,7 +2,7 @@ import React, { useState, useEffect, useCallback, useRef } from 'react';
 import CanvasBoard from './components/CanvasBoard';
 import Toolbar from './components/Toolbar';
 import { ToolType, AppState, Annotation } from './types';
-import { analyzeAnnotation } from './services/geminiService';
+import { analyzeAnnotation, initializeGemini } from './services/geminiService';
 import { Upload, X, Loader2 } from 'lucide-react';
 
 const App: React.FC = () => {
@@ -113,12 +113,19 @@ const App: React.FC = () => {
     link.click();
   };
 
+  useEffect(() => {
+    const handleMessage = (event: MessageEvent) => {
+      const message = event.data;
+      if (message.command === 'setApiKey') {
+        initializeGemini(message.key);
+      }
+    };
+    window.addEventListener('message', handleMessage);
+    return () => window.removeEventListener('message', handleMessage);
+  }, []);
+
   const handleAnalyze = async () => {
     if (!canvasRef.current) return;
-    if (!process.env.API_KEY) {
-        alert("Please configure process.env.API_KEY to use AI features.");
-        return;
-    }
     
     setIsLoading(true);
     setShowAiModal(true);
