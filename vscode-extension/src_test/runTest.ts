@@ -22,9 +22,9 @@ async function main() {
       extensionTestsPath,
       launchArgs: [
         '--user-data-dir',
-        `/mnt/j/vscode-test-user-data`,
+        `/mnt/y/vscode-test-user-data`,
         '--extensions-dir',
-        `/mnt/j/vscode-test-extensions`
+        `/mnt/y/vscode-test-extensions`
       ]
     });
   } catch (err) {

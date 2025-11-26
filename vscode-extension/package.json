@@ -27,10 +27,10 @@
     "vscode:prepublish": "npm run compile",
     "compile": "tsc -p ./",
     "watch": "tsc -watch -p ./",
-    "test": "node ./dist/test/runTest.js --reporter-options spec=-"
+    "test": "xvfb-run -a node ./dist/test/runTest.js --slow 1000"
   },
   "devDependencies": {
-    "@types/vscode": "^1.80.0",
+    "@types/vscode": "^1.106.1",
     "@types/mocha": "^10.0.6",
     "@vscode/test-electron": "^2.3.9",
     "typescript": "^5.3.3",
