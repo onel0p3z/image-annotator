@@ -18,7 +18,7 @@
     "commands": [
       {
         "command": "antigravity.annotate",
-        "title": "Annotate Image from Clipboard"
+        "title": "Antigravity: Annotate Image from Clipboard"
       }
     ],
     "menus": {
