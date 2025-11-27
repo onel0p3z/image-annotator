@@ -7,7 +7,7 @@
     "strict": true
   },
   "include": [
-    "src"
+    "srcs"
   ],
   "exclude": [
     "node_modules"
