@@ -20,6 +20,8 @@ const App: React.FC = () => {
   const [aiResponse, setAiResponse] = useState<string | null>(null);
   const [showAiModal, setShowAiModal] = useState(false);
   const [prompt, setPrompt] = useState("Describe the highlighted areas in this screenshot. If it contains code, suggest improvements or find bugs.");
+  const [showToast, setShowToast] = useState(false);
+  const [toastMessage, setToastMessage] = useState("");
   
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -99,11 +101,15 @@ const App: React.FC = () => {
         new ClipboardItem({ 'image/png': blob })
       ]);
       
-      // Visual feedback could be added here (toast)
-      alert("Annotated image copied to clipboard! Paste it into your AI Agent.");
+      setToastMessage("Annotated image copied to clipboard!");
+      setShowToast(true);
+      setTimeout(() => setShowToast(false), 3000); // Hide after 3 seconds
+
     } catch (err) {
       console.error("Failed to copy", err);
-      alert("Failed to copy to clipboard. Please check permissions.");
+      setToastMessage("Failed to copy to clipboard. Please check permissions.");
+      setShowToast(true);
+      setTimeout(() => setShowToast(false), 3000); // Hide after 3 seconds
     }
   };
 
@@ -256,6 +262,12 @@ const App: React.FC = () => {
                )}
             </div>
           </div>
+        </div>
+      )}
+
+      {showToast && (
+        <div className="fixed bottom-6 left-1/2 transform -translate-x-1/2 bg-green-600 text-white px-4 py-2 rounded-lg shadow-lg z-[101]">
+          {toastMessage}
         </div>
       )}
     </div>
