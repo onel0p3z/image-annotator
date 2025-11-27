@@ -1,7 +1,6 @@
 import React, { useRef, useEffect, useState, useCallback } from 'react';
 import { Annotation, Point, ToolType } from '../types';
 import { renderAnnotation } from '../utils/drawUtils';
-import { v4 as uuidv4 } from 'uuid'; // Actually we will use simple random string to avoid adding dep if possible, but let's implement simple ID
 
 const generateId = () => Math.random().toString(36).substr(2, 9);
 

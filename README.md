@@ -1,44 +1,50 @@
-<div align="center">
-<img width="1200" height="475" alt="GHBanner" src="https://github.com/user-attachments/assets/0aa67016-6eaf-458a-adb2-6e31a0763ed6" />
-</div>
+# Antigravity Annotator
 
-# Run and deploy your AI Studio app
+**Antigravity Annotator** is a VS Code extension that allows you to quickly annotate images (screenshots, diagrams) and analyze them using Google's Gemini AI directly within your IDE.
 
-This contains everything you need to run your app locally.
+## Features
 
-View your app in AI Studio: https://ai.studio/apps/drive/12_bAVgqXJhSXFdrGuAlohvkOx70r1VU9
+*   **📋 Paste & Annotate:** Paste images directly from your clipboard or upload them from your disk.
+*   **✏️ Rich Annotation Tools:** Use arrows, rectangles, circles, text, counters, and a pixelate/blur tool to highlight or redact information.
+*   **🤖 AI Analysis:** Ask Gemini to analyze your annotated image. Great for:
+    *   Describing UI bugs.
+    *   Explaining complex diagrams.
+    *   Suggesting code improvements based on visual context.
+*   **🔒 Secure:** Your API Key is stored securely in VS Code settings and never exposed to the webview.
 
-## Run Locally
+## Getting Started
 
-**Prerequisites:**  Node.js
+1.  **Install the Extension:** Search for "Antigravity Annotator" in the VS Code Marketplace (once published) or install the `.vsix` manually.
+2.  **Get an API Key:** You need a Google Gemini API Key. Get one for free at [Google AI Studio](https://aistudio.google.com/app/apikey).
+3.  **Configure:**
+    *   Open VS Code Settings (`Ctrl+,`).
+    *   Search for `Antigravity`.
+    *   Paste your key into the `Gemini Api Key` field.
+4.  **Usage:**
+    *   Open the Command Palette (`Ctrl+Shift+P`) and run `Antigravity: Annotate Image`.
+    *   Or right-click in any editor and select `Annotate Image`.
+    *   Paste an image (`Ctrl+V`) onto the canvas.
+    *   Draw your annotations.
+    *   Click **Ask AI** to get insights!
 
+## Requirements
 
-1. Install dependencies:
-   `npm install`
-2. Set the `GEMINI_API_KEY` in [.env.local](.env.local) to your Gemini API key
-3. Run the app:
-   `npm run dev`
+*   VS Code ^1.80.0
 
-## Run as a VS Code Extension Locally
+## Extension Settings
 
-To test the extension locally:
+*   `antigravity-annotator.geminiApiKey`: Your Google Gemini API Key.
 
-1. **Install Dependencies:**
-   - Run `npm install` in the root directory.
-   - Run `npm install` in the `vscode-extension` directory.
+## Known Issues
 
-2. **Build the React App:**
-   - Run `npm run build` from the root directory. This will build the webview and place it in `vscode-extension/webview-dist`.
+*   Large images might take a moment to process depending on your internet connection.
 
-3. **Compile the Extension:**
-   - In the `vscode-extension` directory, run `npm install -g vsce`.
-   - Run `vsce package`. This will create a `.vsix` file.
+## Release Notes
 
-4. **Install the Extension:**
-   - In VS Code, go to the Extensions view.
-   - Click the "..." menu and select "Install from VSIX...".
-   - Select the `.vsix` file you just created.
+### 1.0.0
 
-5. **Run the Extension:**
-   - Open the Command Palette (`Cmd+Shift+P` or `Ctrl+Shift+P`).
-   - Run the "Annotate Image from Clipboard" command.
+Initial release of Antigravity Annotator.
+
+---
+
+**Enjoy!**

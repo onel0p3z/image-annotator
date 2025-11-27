@@ -25,3 +25,4 @@ dist-ssr
 
 .gemini/
 gha-creds-*.json
+*.vsix

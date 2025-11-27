@@ -2,7 +2,6 @@ import React, { useState, useEffect, useCallback, useRef } from 'react';
 import CanvasBoard from './components/CanvasBoard';
 import Toolbar from './components/Toolbar';
 import { ToolType, AppState, Annotation } from './types';
-import { analyzeAnnotation, initializeGemini } from './services/geminiService';
 import { Upload, X, Loader2 } from 'lucide-react';
 
 const App: React.FC = () => {
@@ -23,7 +22,7 @@ const App: React.FC = () => {
   const [prompt, setPrompt] = useState("Describe the highlighted areas in this screenshot. If it contains code, suggest improvements or find bugs.");
   const [showToast, setShowToast] = useState(false);
   const [toastMessage, setToastMessage] = useState("");
-  const [apiKey, setApiKey] = useState<string | null>(null);
+  const [hasApiKey, setHasApiKey] = useState<boolean>(false);
   
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -138,12 +137,28 @@ const App: React.FC = () => {
   useEffect(() => {
     const handleMessage = (event: MessageEvent) => {
       const message = event.data;
-      if (message.command === 'setApiKey') {
-        initializeGemini(message.key);
-        setApiKey(message.key);
+      switch (message.command) {
+        case 'apiKeyStatus':
+          setHasApiKey(message.hasKey);
+          break;
+        case 'analysisResult':
+          setAiResponse(message.text);
+          setIsLoading(false);
+          break;
+        case 'analysisError':
+          setAiResponse("Error analyzing image. Click copy to get details.");
+          setErrorDetails(`Error analyzing image:\n${message.error}\n\nStack:\n${message.stack}`);
+          setIsLoading(false);
+          break;
       }
     };
     window.addEventListener('message', handleMessage);
+    
+    // Initial check
+    if (vscode.current) {
+      vscode.current.postMessage({ command: 'checkApiKey' });
+    }
+
     return () => window.removeEventListener('message', handleMessage);
   }, []);
 
@@ -154,24 +169,19 @@ const App: React.FC = () => {
     setErrorDetails(null);
   };
 
-  const runAnalysis = async () => {
-    if (!canvasRef.current) return;
+  const runAnalysis = () => {
+    if (!canvasRef.current || !vscode.current) return;
     
     setIsLoading(true);
     setAiResponse(null);
     setErrorDetails(null);
 
-    try {
-      const base64 = canvasRef.current.toDataURL();
-      const text = await analyzeAnnotation(base64, prompt);
-      setAiResponse(text || "No response generated.");
-    } catch (e: any) {
-      const errorMsg = e.message || JSON.stringify(e);
-      setAiResponse("Error analyzing image. Click copy to get details.");
-      setErrorDetails(`Error analyzing image:\n${errorMsg}\n\nStack:\n${e.stack}`);
-    } finally {
-      setIsLoading(false);
-    }
+    const base64 = canvasRef.current.toDataURL();
+    vscode.current.postMessage({ 
+      command: 'analyzeImage', 
+      image: base64,
+      prompt: prompt
+    });
   };
 
   return (
@@ -219,7 +229,7 @@ const App: React.FC = () => {
           <div className="bg-ide-panel border border-ide-border rounded-lg shadow-2xl max-w-2xl w-full max-h-[80vh] flex flex-col">
             <div className="flex justify-between items-center p-4 border-b border-ide-border">
               <h3 className="font-semibold text-white flex items-center gap-2">
-                 {apiKey ? 'Gemini Analysis' : 'Setup Required'}
+                 {hasApiKey ? 'Gemini Analysis' : 'Setup Required'}
               </h3>
               <button onClick={() => setShowAiModal(false)} className="hover:text-white">
                 <X size={20} />
@@ -227,7 +237,7 @@ const App: React.FC = () => {
             </div>
             
             <div className="p-6 overflow-y-auto flex-1">
-              {!apiKey ? (
+              {!hasApiKey ? (
                  <div className="flex flex-col gap-4 text-ide-text">
                     <p className="text-red-400 font-semibold">Gemini API Key is missing.</p>
                     <p>To use the AI features, you need to configure your API key in VS Code settings.</p>
@@ -285,7 +295,7 @@ const App: React.FC = () => {
                )}
                
                {/* Analyze Button: Show if has key, not loading, and no response yet */}
-               {apiKey && !isLoading && !aiResponse && (
+               {hasApiKey && !isLoading && !aiResponse && (
                    <button 
                     onClick={runAnalysis}
                     className="bg-ide-accent hover:bg-blue-600 text-white px-4 py-2 rounded text-sm font-medium"

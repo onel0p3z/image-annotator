@@ -3,9 +3,21 @@
   "displayName": "Antigravity Annotator",
   "description": "Image annotation tool for AI context",
   "version": "1.0.0",
-  "publisher": "your-name",
+  "publisher": "antigravity",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/example/antigravity-annotator"
+  },
+  "keywords": [
+    "ai",
+    "gemini",
+    "annotation",
+    "image",
+    "code-review"
+  ],
   "engines": {
-    "vscode": "^1.106.0"
+    "vscode": "^1.80.0"
   },
   "categories": [
     "Other"
@@ -46,7 +58,10 @@
     "watch": "tsc -watch -p ./",
     "package": "vsce package"
   },
+  "dependencies": {
+    "@google/genai": "^1.30.0"
+  },
   "devDependencies": {
-    "@types/vscode": "^1.106.1"
+    "@types/vscode": "^1.80.0"
   }
 }
