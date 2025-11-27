@@ -2,6 +2,8 @@
 
 <div align="center">
 
+<img src="images/icon.png" width="128" alt="Image Annotator Logo" />
+
 ![License](https://img.shields.io/badge/license-MIT-blue.svg)
 ![Version](https://img.shields.io/badge/version-1.0.0-green.svg)
 ![VS Code](https://img.shields.io/badge/vscode-%5E1.80.0-blueviolet.svg)

@@ -3,6 +3,7 @@
   "displayName": "Image Annotator",
   "description": "Image annotation tool for AI context",
   "version": "1.0.0",
+  "icon": "images/icon.png",
   "publisher": "onel0p3z",
   "license": "MIT",
   "repository": {
