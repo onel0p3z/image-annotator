@@ -1,6 +1,6 @@
-# Antigravity Annotator
+# Image Annotator
 
-**Antigravity Annotator** is a VS Code extension that allows you to quickly annotate images (screenshots, diagrams) and analyze them using Google's Gemini AI directly within your IDE.
+**Image Annotator** is a VS Code extension that allows you to quickly annotate images (screenshots, diagrams) and analyze them using Google's Gemini AI directly within your IDE.
 
 ## Features
 
@@ -14,14 +14,14 @@
 
 ## Getting Started
 
-1.  **Install the Extension:** Search for "Antigravity Annotator" in the VS Code Marketplace (once published) or install the `.vsix` manually.
+1.  **Install the Extension:** Search for "Image Annotator" in the VS Code Marketplace (once published) or install the `.vsix` manually.
 2.  **Get an API Key:** You need a Google Gemini API Key. Get one for free at [Google AI Studio](https://aistudio.google.com/app/apikey).
 3.  **Configure:**
     *   Open VS Code Settings (`Ctrl+,`).
-    *   Search for `Antigravity`.
+    *   Search for `Image Annotator`.
     *   Paste your key into the `Gemini Api Key` field.
 4.  **Usage:**
-    *   Open the Command Palette (`Ctrl+Shift+P`) and run `Antigravity: Annotate Image`.
+    *   Open the Command Palette (`Ctrl+Shift+P`) and run `Image Annotator: Annotate Image`.
     *   Or right-click in any editor and select `Annotate Image`.
     *   Paste an image (`Ctrl+V`) onto the canvas.
     *   Draw your annotations.
@@ -33,7 +33,7 @@
 
 ## Extension Settings
 
-*   `antigravity-annotator.geminiApiKey`: Your Google Gemini API Key.
+*   `image-annotator.geminiApiKey`: Your Google Gemini API Key.
 
 ## Known Issues
 
@@ -43,7 +43,7 @@
 
 ### 1.0.0
 
-Initial release of Antigravity Annotator.
+Initial release of Image Annotator.
 
 ---
 

@@ -4,9 +4,9 @@ import * as path from 'path';
 import { GoogleGenAI } from "@google/genai";
 
 export function activate(context: vscode.ExtensionContext) {
-  let disposable = vscode.commands.registerCommand('antigravity.annotate', () => {
+  let disposable = vscode.commands.registerCommand('image-annotator.annotate', () => {
     const panel = vscode.window.createWebviewPanel(
-      'antigravityAnnotator',
+      'imageAnnotator',
       'Annotator',
       vscode.ViewColumn.One,
       {
@@ -21,7 +21,7 @@ export function activate(context: vscode.ExtensionContext) {
 
     // Helper to check and send key status
     const sendKeyStatus = () => {
-      const apiKey = vscode.workspace.getConfiguration('antigravity-annotator').get<string>('geminiApiKey');
+      const apiKey = vscode.workspace.getConfiguration('image-annotator').get<string>('geminiApiKey');
       panel.webview.postMessage({ command: 'apiKeyStatus', hasKey: !!apiKey && apiKey.trim().length > 0 });
     };
 
@@ -30,7 +30,7 @@ export function activate(context: vscode.ExtensionContext) {
 
     // Listen for config changes
     const configListener = vscode.workspace.onDidChangeConfiguration(e => {
-      if (e.affectsConfiguration('antigravity-annotator.geminiApiKey')) {
+      if (e.affectsConfiguration('image-annotator.geminiApiKey')) {
         sendKeyStatus();
       }
     });
@@ -43,11 +43,11 @@ export function activate(context: vscode.ExtensionContext) {
     panel.webview.onDidReceiveMessage(
       async (message) => {
         if (message.command === 'openSettings') {
-          vscode.commands.executeCommand('workbench.action.openSettings', '@id:antigravity-annotator.geminiApiKey');
+          vscode.commands.executeCommand('workbench.action.openSettings', '@id:image-annotator.geminiApiKey');
         } else if (message.command === 'checkApiKey') {
           sendKeyStatus();
         } else if (message.command === 'analyzeImage') {
-          const apiKey = vscode.workspace.getConfiguration('antigravity-annotator').get<string>('geminiApiKey');
+          const apiKey = vscode.workspace.getConfiguration('image-annotator').get<string>('geminiApiKey');
           
           if (!apiKey) {
             panel.webview.postMessage({ command: 'analysisError', error: 'API Key is missing' });

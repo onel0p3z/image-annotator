@@ -244,7 +244,7 @@ const App: React.FC = () => {
                     <ol className="list-decimal list-inside space-y-2 ml-2">
                         <li>Get a key from <a href="https://aistudio.google.com/app/apikey" className="text-blue-400 underline">Google AI Studio</a></li>
                         <li>Click the button below to open settings</li>
-                        <li>Paste your key into the <strong>Antigravity Annotator: Gemini Api Key</strong> field</li>
+                        <li>Paste your key into the <strong>Image Annotator: Gemini Api Key</strong> field</li>
                     </ol>
                     <div className="mt-4">
                         <button 

@@ -1,8 +1,8 @@
-# Antigravity Annotator
+# Image Annotator
 
 ## Project Overview
 
-**Antigravity Annotator** is a specialized image annotation tool designed to streamline the process of providing visual context to AI agents. It functions as both a standalone web application and a VS Code extension.
+**Image Annotator** is a specialized image annotation tool designed to streamline the process of providing visual context to AI agents. It functions as both a standalone web application and a VS Code extension.
 
 **Core Features:**
 *   **Image Input:** Paste images directly from the clipboard or upload via file picker.

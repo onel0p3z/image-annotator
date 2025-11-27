@@ -1,4 +1,4 @@
-# Publishing Antigravity Annotator to Open VSX
+# Publishing Image Annotator to Open VSX
 
 To turn this React Web App into a VS Code extension publishable on open-vsx.org, follow these steps.
 
@@ -7,8 +7,8 @@ Create a new folder for the extension wrapper. You need a `package.json` that de
 
 ```json
 {
-  "name": "antigravity-annotator",
-  "displayName": "Antigravity Annotator",
+  "name": "image-annotator",
+  "displayName": "Image Annotator",
   "description": "Image annotation tool for AI context",
   "version": "1.0.0",
   "publisher": "your-name",
@@ -21,7 +21,7 @@ Create a new folder for the extension wrapper. You need a `package.json` that de
   "contributes": {
     "commands": [
       {
-        "command": "antigravity.annotate",
+        "command": "image-annotator.annotate",
         "title": "Annotate Image from Clipboard"
       }
     ]
@@ -42,9 +42,9 @@ Example `extension.ts`:
 import * as vscode from 'vscode';
 
 export function activate(context: vscode.ExtensionContext) {
-  let disposable = vscode.commands.registerCommand('antigravity.annotate', () => {
+  let disposable = vscode.commands.registerCommand('image-annotator.annotate', () => {
     const panel = vscode.window.createWebviewPanel(
-      'antigravityAnnotator',
+      'imageAnnotator',
       'Annotator',
       vscode.ViewColumn.One,
       { enableScripts: true }
@@ -78,5 +78,5 @@ window.addEventListener('message', event => {
 3. Create an account on [open-vsx.org](https://open-vsx.org).
 4. Create a namespace and upload your `.vsix` file.
 
-## 5. Antigravity IDE
-If "Antigravity IDE" is a web-based IDE (like Project IDX), this React app can likely be deployed as a standalone web tool or an internal plugin without the full VS Code wrapper.
+## 5. Image Annotator IDE
+If "Image Annotator IDE" is a web-based IDE (like Project IDX), this React app can likely be deployed as a standalone web tool or an internal plugin without the full VS Code wrapper.

@@ -1,13 +1,13 @@
 {
-  "name": "antigravity-annotator",
-  "displayName": "Antigravity Annotator",
+  "name": "image-annotator",
+  "displayName": "Image Annotator",
   "description": "Image annotation tool for AI context",
   "version": "1.0.0",
-  "publisher": "antigravity",
+  "publisher": "image-annotator",
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "https://github.com/example/antigravity-annotator"
+    "url": "https://github.com/example/image-annotator"
   },
   "keywords": [
     "ai",
@@ -23,28 +23,28 @@
     "Other"
   ],
   "activationEvents": [
-    "onCommand:antigravity.annotate"
+    "onCommand:image-annotator.annotate"
   ],
   "main": "./dist/extension.js",
   "contributes": {
     "commands": [
       {
-        "command": "antigravity.annotate",
+        "command": "image-annotator.annotate",
         "title": "Annotate Image"
       }
     ],
     "menus": {
       "editor/context": [
         {
-          "command": "antigravity.annotate",
+          "command": "image-annotator.annotate",
           "group": "navigation"
         }
       ]
     },
     "configuration": {
-      "title": "Antigravity Annotator",
+      "title": "Image Annotator",
       "properties": {
-        "antigravity-annotator.geminiApiKey": {
+        "image-annotator.geminiApiKey": {
           "type": "string",
           "default": "",
           "description": "API Key for Google Gemini (AI Analysis)"

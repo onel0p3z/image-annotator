@@ -1,5 +1,5 @@
 {
-  "name": "Antigravity Annotator",
+  "name": "Image Annotator",
   "description": "A professional image annotation tool optimized for AI context generation, featuring Flameshot-like tools and direct Gemini integration.",
   "requestFramePermissions": [
     "camera",
