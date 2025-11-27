@@ -19,6 +19,8 @@ const App: React.FC = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [aiResponse, setAiResponse] = useState<string | null>(null);
   const [showAiModal, setShowAiModal] = useState(false);
+  const [prompt, setPrompt] = useState("Describe the highlighted areas in this screenshot. If it contains code, suggest improvements or find bugs.");
+  
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
@@ -124,16 +126,21 @@ const App: React.FC = () => {
     return () => window.removeEventListener('message', handleMessage);
   }, []);
 
-  const handleAnalyze = async () => {
+  const handleAnalyze = () => {
+    if (!canvasRef.current) return;
+    setShowAiModal(true);
+    setAiResponse(null);
+  };
+
+  const runAnalysis = async () => {
     if (!canvasRef.current) return;
     
     setIsLoading(true);
-    setShowAiModal(true);
     setAiResponse(null);
 
     try {
       const base64 = canvasRef.current.toDataURL();
-      const text = await analyzeAnnotation(base64, "Describe the highlighted areas in this screenshot. If it contains code, suggest improvements or find bugs.");
+      const text = await analyzeAnnotation(base64, prompt);
       setAiResponse(text || "No response generated.");
     } catch (e) {
       setAiResponse("Error analyzing image. See console for details.");
@@ -199,25 +206,54 @@ const App: React.FC = () => {
                   <Loader2 size={40} className="animate-spin text-ide-accent" />
                   <p className="text-ide-text">Analyzing image context...</p>
                 </div>
-              ) : (
+              ) : aiResponse ? (
                 <div className="prose prose-invert max-w-none">
                   <pre className="whitespace-pre-wrap font-sans text-sm">
                     {aiResponse}
                   </pre>
                 </div>
+              ) : (
+                <div className="flex flex-col gap-4 h-full">
+                    <p className="text-ide-text text-sm">Review and edit the prompt before sending to Gemini:</p>
+                    <textarea 
+                        className="w-full flex-1 bg-ide-bg border border-ide-border rounded p-3 text-white focus:border-ide-accent outline-none resize-none"
+                        value={prompt}
+                        onChange={(e) => setPrompt(e.target.value)}
+                    />
+                </div>
               )}
             </div>
 
-            <div className="p-4 border-t border-ide-border flex justify-end">
-               <button 
-                onClick={() => {
-                    navigator.clipboard.writeText(aiResponse || "");
-                    setShowAiModal(false);
-                }}
-                className="bg-ide-accent hover:bg-blue-600 text-white px-4 py-2 rounded text-sm font-medium"
-               >
-                 Copy Text & Close
-               </button>
+            <div className="p-4 border-t border-ide-border flex justify-end gap-3">
+               {!isLoading && !aiResponse && (
+                   <button 
+                    onClick={() => setShowAiModal(false)}
+                    className="text-ide-text hover:text-white px-4 py-2 rounded text-sm"
+                   >
+                     Cancel
+                   </button>
+               )}
+               
+               {!isLoading && !aiResponse && (
+                   <button 
+                    onClick={runAnalysis}
+                    className="bg-ide-accent hover:bg-blue-600 text-white px-4 py-2 rounded text-sm font-medium"
+                   >
+                     Analyze
+                   </button>
+               )}
+
+               {aiResponse && (
+                   <button 
+                    onClick={() => {
+                        navigator.clipboard.writeText(aiResponse || "");
+                        setShowAiModal(false);
+                    }}
+                    className="bg-ide-accent hover:bg-blue-600 text-white px-4 py-2 rounded text-sm font-medium"
+                   >
+                     Copy Text & Close
+                   </button>
+               )}
             </div>
           </div>
         </div>
