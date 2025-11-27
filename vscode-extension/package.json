@@ -1,0 +1,39 @@
+{
+  "name": "antigravity-annotator",
+  "displayName": "Antigravity Annotator",
+  "description": "Image annotation tool for AI context",
+  "repository": {
+    "url": "https://github.com/onel0p3z/antigravity-annotator"
+  },
+  "version": "1.0.0",
+  "publisher": "onel0p3z",
+  "engines": {
+    "vscode": "^1.85.0"
+  },
+  "categories": [
+    "Other"
+  ],
+  "activationEvents": [],
+  "main": "./dist/extension.js",
+  "contributes": {
+    "commands": [
+      {
+        "command": "antigravity.annotate",
+        "title": "Annotate Image from Clipboard"
+      }
+    ]
+  },
+  "scripts": {
+    "vscode:prepublish": "npm run compile",
+    "compile": "tsc -p ./",
+    "watch": "tsc -watch -p ./",
+    "test": "xvfb-run -a node ./dist/test/runTest.js --slow 1000"
+  },
+  "devDependencies": {
+    "@types/vscode": "^1.85.0",
+    "@types/mocha": "^10.0.6",
+    "@vscode/test-electron": "^2.3.9",
+    "typescript": "^5.3.3",
+    "glob": "^10.3.10"
+  }
+}
