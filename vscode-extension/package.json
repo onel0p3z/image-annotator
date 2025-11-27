@@ -18,7 +18,17 @@
         "command": "antigravity.annotate",
         "title": "Annotate Image from Clipboard"
       }
-    ]
+    ],
+    "configuration": {
+      "title": "Antigravity Annotator",
+      "properties": {
+        "antigravity-annotator.geminiApiKey": {
+          "type": "string",
+          "default": "",
+          "description": "API Key for Google Gemini (AI Analysis)"
+        }
+      }
+    }
   },
   "devDependencies": {
     "@types/vscode": "^1.106.1"
