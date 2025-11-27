@@ -30,11 +30,15 @@ const App: React.FC = () => {
 
   // VS Code API
   const vscode = useRef<any>(null);
-  useEffect(() => {
-    if (typeof acquireVsCodeApi !== 'undefined') {
+  
+  // Safe initialization of VS Code API
+  if (!vscode.current && typeof acquireVsCodeApi === 'function') {
+      try {
         vscode.current = acquireVsCodeApi();
-    }
-  }, []);
+      } catch(e) {
+        console.error("Failed to acquire VS Code API:", e);
+      }
+  }
 
   // --- History Management ---
   const pushHistory = (newHistory: Annotation[]) => {

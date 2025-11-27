@@ -32,6 +32,13 @@ export interface AppState {
   historyStep: number; // For undo/redo
 }
 
+declare global {
+  interface Window {
+    acquireVsCodeApi: () => any;
+  }
+  function acquireVsCodeApi(): any;
+}
+
 export const COLORS = [
   '#ef4444', // Red
   '#f97316', // Orange
