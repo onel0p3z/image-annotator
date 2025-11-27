@@ -3,11 +3,11 @@
   "displayName": "Image Annotator",
   "description": "Image annotation tool for AI context",
   "version": "1.0.0",
-  "publisher": "image-annotator",
+  "publisher": "onel0p3z",
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "https://github.com/example/image-annotator"
+    "url": "https://github.com/onel0p3z/image-annotator"
   },
   "keywords": [
     "ai",
