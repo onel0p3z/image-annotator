@@ -210,6 +210,7 @@ const App: React.FC = () => {
         onDownload={handleDownload}
         onAnalyze={handleAnalyze}
         onUpload={() => fileInputRef.current?.click()}
+        imageSrc={imageSrc}
       />
 
       {/* AI Modal */}

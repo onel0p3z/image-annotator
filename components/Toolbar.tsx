@@ -22,6 +22,7 @@ interface ToolbarProps {
   canUndo: boolean;
   canRedo: boolean;
   onUpload: () => void;
+  imageSrc: string | null;
 }
 
 const Toolbar: React.FC<ToolbarProps> = ({
@@ -30,7 +31,8 @@ const Toolbar: React.FC<ToolbarProps> = ({
   strokeWidth, setStrokeWidth,
   onUndo, onRedo, onClear,
   onCopy, onDownload, onAnalyze,
-  canUndo, canRedo, onUpload
+  canUndo, canRedo, onUpload,
+  imageSrc
 }) => {
   
   const tools = [
@@ -114,7 +116,9 @@ const Toolbar: React.FC<ToolbarProps> = ({
         <div className="flex gap-2">
           <button 
             onClick={onAnalyze}
-            className="flex items-center gap-2 px-3 py-1.5 rounded bg-purple-600 hover:bg-purple-700 text-white font-medium text-xs transition-colors"
+            disabled={!imageSrc}
+            title={!imageSrc ? "Paste or upload an image to enable AI analysis" : "Ask Gemini AI to analyze your annotations"}
+            className={`flex items-center gap-2 px-3 py-1.5 rounded ${!imageSrc ? 'bg-gray-500 cursor-not-allowed' : 'bg-purple-600 hover:bg-purple-700'} text-white font-medium text-xs transition-colors`}
           >
             <Sparkles size={14} /> Ask AI
           </button>
