@@ -10,7 +10,9 @@
   "categories": [
     "Other"
   ],
-  "activationEvents": [],
+  "activationEvents": [
+    "onCommand:antigravity.annotate"
+  ],
   "main": "./dist/extension.js",
   "contributes": {
     "commands": [
@@ -19,6 +21,14 @@
         "title": "Annotate Image from Clipboard"
       }
     ],
+    "menus": {
+      "editor/context": [
+        {
+          "command": "antigravity.annotate",
+          "group": "navigation"
+        }
+      ]
+    },
     "configuration": {
       "title": "Antigravity Annotator",
       "properties": {
