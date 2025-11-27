@@ -18,13 +18,23 @@ const App: React.FC = () => {
 
   const [isLoading, setIsLoading] = useState(false);
   const [aiResponse, setAiResponse] = useState<string | null>(null);
+  const [errorDetails, setErrorDetails] = useState<string | null>(null);
   const [showAiModal, setShowAiModal] = useState(false);
   const [prompt, setPrompt] = useState("Describe the highlighted areas in this screenshot. If it contains code, suggest improvements or find bugs.");
   const [showToast, setShowToast] = useState(false);
   const [toastMessage, setToastMessage] = useState("");
+  const [apiKey, setApiKey] = useState<string | null>(null);
   
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
+
+  // VS Code API
+  const vscode = useRef<any>(null);
+  useEffect(() => {
+    if (typeof acquireVsCodeApi !== 'undefined') {
+        vscode.current = acquireVsCodeApi();
+    }
+  }, []);
 
   // --- History Management ---
   const pushHistory = (newHistory: Annotation[]) => {
@@ -126,6 +136,7 @@ const App: React.FC = () => {
       const message = event.data;
       if (message.command === 'setApiKey') {
         initializeGemini(message.key);
+        setApiKey(message.key);
       }
     };
     window.addEventListener('message', handleMessage);
@@ -136,6 +147,7 @@ const App: React.FC = () => {
     if (!canvasRef.current) return;
     setShowAiModal(true);
     setAiResponse(null);
+    setErrorDetails(null);
   };
 
   const runAnalysis = async () => {
@@ -143,13 +155,16 @@ const App: React.FC = () => {
     
     setIsLoading(true);
     setAiResponse(null);
+    setErrorDetails(null);
 
     try {
       const base64 = canvasRef.current.toDataURL();
       const text = await analyzeAnnotation(base64, prompt);
       setAiResponse(text || "No response generated.");
-    } catch (e) {
-      setAiResponse("Error analyzing image. See console for details.");
+    } catch (e: any) {
+      const errorMsg = e.message || JSON.stringify(e);
+      setAiResponse("Error analyzing image. Click copy to get details.");
+      setErrorDetails(`Error analyzing image:\n${errorMsg}\n\nStack:\n${e.stack}`);
     } finally {
       setIsLoading(false);
     }
@@ -199,7 +214,7 @@ const App: React.FC = () => {
           <div className="bg-ide-panel border border-ide-border rounded-lg shadow-2xl max-w-2xl w-full max-h-[80vh] flex flex-col">
             <div className="flex justify-between items-center p-4 border-b border-ide-border">
               <h3 className="font-semibold text-white flex items-center gap-2">
-                 Gemini Analysis
+                 {apiKey ? 'Gemini Analysis' : 'Setup Required'}
               </h3>
               <button onClick={() => setShowAiModal(false)} className="hover:text-white">
                 <X size={20} />
@@ -207,13 +222,36 @@ const App: React.FC = () => {
             </div>
             
             <div className="p-6 overflow-y-auto flex-1">
-              {isLoading ? (
+              {!apiKey ? (
+                 <div className="flex flex-col gap-4 text-ide-text">
+                    <p className="text-red-400 font-semibold">Gemini API Key is missing.</p>
+                    <p>To use the AI features, you need to configure your API key in VS Code settings.</p>
+                    <ol className="list-decimal list-inside space-y-2 ml-2">
+                        <li>Get a key from <a href="https://aistudio.google.com/app/apikey" className="text-blue-400 underline">Google AI Studio</a></li>
+                        <li>Click the button below to open settings</li>
+                        <li>Paste your key into the <strong>Antigravity Annotator: Gemini Api Key</strong> field</li>
+                    </ol>
+                    <div className="mt-4">
+                        <button 
+                            onClick={() => vscode.current?.postMessage({ command: 'openSettings' })}
+                            className="bg-ide-accent hover:bg-blue-600 text-white px-4 py-2 rounded text-sm font-medium"
+                        >
+                            Open VS Code Settings
+                        </button>
+                    </div>
+                 </div>
+              ) : isLoading ? (
                 <div className="flex flex-col items-center justify-center py-12 gap-4">
                   <Loader2 size={40} className="animate-spin text-ide-accent" />
                   <p className="text-ide-text">Analyzing image context...</p>
                 </div>
               ) : aiResponse ? (
                 <div className="prose prose-invert max-w-none">
+                   {errorDetails && (
+                       <div className="bg-red-900/20 border border-red-500/50 p-3 rounded mb-4 text-red-200 text-sm">
+                           Analysis failed. You can copy the technical details below to debug.
+                       </div>
+                   )}
                   <pre className="whitespace-pre-wrap font-sans text-sm">
                     {aiResponse}
                   </pre>
@@ -231,7 +269,8 @@ const App: React.FC = () => {
             </div>
 
             <div className="p-4 border-t border-ide-border flex justify-end gap-3">
-               {!isLoading && !aiResponse && (
+               {/* Cancel Button: Show if not loading and (no response or error present) */}
+               {!isLoading && (!aiResponse || errorDetails) && (
                    <button 
                     onClick={() => setShowAiModal(false)}
                     className="text-ide-text hover:text-white px-4 py-2 rounded text-sm"
@@ -240,7 +279,8 @@ const App: React.FC = () => {
                    </button>
                )}
                
-               {!isLoading && !aiResponse && (
+               {/* Analyze Button: Show if has key, not loading, and no response yet */}
+               {apiKey && !isLoading && !aiResponse && (
                    <button 
                     onClick={runAnalysis}
                     className="bg-ide-accent hover:bg-blue-600 text-white px-4 py-2 rounded text-sm font-medium"
@@ -249,15 +289,22 @@ const App: React.FC = () => {
                    </button>
                )}
 
+               {/* Copy Button: Show if response exists (success or error) */}
                {aiResponse && (
                    <button 
                     onClick={() => {
-                        navigator.clipboard.writeText(aiResponse || "");
-                        setShowAiModal(false);
+                        navigator.clipboard.writeText(errorDetails || aiResponse || "");
+                        if (errorDetails) {
+                             setToastMessage("Error details copied to clipboard.");
+                             setShowToast(true);
+                             setTimeout(() => setShowToast(false), 3000);
+                        } else {
+                             setShowAiModal(false);
+                        }
                     }}
-                    className="bg-ide-accent hover:bg-blue-600 text-white px-4 py-2 rounded text-sm font-medium"
+                    className={`px-4 py-2 rounded text-sm font-medium text-white ${errorDetails ? 'bg-red-600 hover:bg-red-700' : 'bg-ide-accent hover:bg-blue-600'}`}
                    >
-                     Copy Text & Close
+                     {errorDetails ? "Copy Error Details" : "Copy Text & Close"}
                    </button>
                )}
             </div>

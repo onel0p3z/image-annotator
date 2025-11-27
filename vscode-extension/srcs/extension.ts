@@ -25,7 +25,9 @@ export function activate(context: vscode.ExtensionContext) {
 
     panel.webview.onDidReceiveMessage(
       message => {
-        // Handle messages from the webview
+        if (message.command === 'openSettings') {
+          vscode.commands.executeCommand('workbench.action.openSettings', '@id:antigravity-annotator.geminiApiKey');
+        }
       },
       undefined,
       context.subscriptions
