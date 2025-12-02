@@ -12,6 +12,8 @@
 
 </div>
 
+![Image Annotator Screenshot](images/main-app-view.png)
+
 ---
 
 **Image Annotator** is a powerful VS Code extension designed to bridge the gap between visual context and code. Whether you're reporting a UI bug, documenting a complex architecture diagram, or asking AI for help with a visual layout, Image Annotator makes it seamless.
@@ -25,6 +27,8 @@ Paste any image from your clipboard and start annotating immediately.
 *   **Context:** Add Text labels to explain your thoughts.
 *   **Sequence:** Use the Counter tool (`#`) to create step-by-step flows (1, 2, 3...).
 *   **Privacy:** Redact sensitive info with the Pixelate/Blur tool.
+
+![Annotation Example](images/example-annotated-1764644482910.png)
 
 ### 🤖 AI-Powered Analysis (Gemini)
 Don't just draw—**ask**. Integrated with Google's Gemini AI (2.5 Flash), you can:
@@ -54,6 +58,7 @@ To use the AI features, you need a Google Gemini API Key.
 ### 3. Usage
 1.  **Open the Annotator:**
     *   Open Command Palette (`Ctrl+Shift+P` / `Cmd+Shift+P`) -> Type `Annotate Image`.
+    *   ![Command Palette](images/annotate-in-command-menu.png)
     *   *Or* Right-click in any text editor -> Select `Annotate Image`.
 2.  **Add an Image:**
     *   Copy an image to your clipboard and press `Ctrl+V` (Cmd+V) in the annotator.

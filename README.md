@@ -2,10 +2,14 @@
 
 **Image Annotator** is a VS Code extension that allows you to quickly annotate images (screenshots, diagrams) and analyze them using Google's Gemini AI directly within your IDE.
 
+![Image Annotator Screenshot](images/main-app-view.png)
+
 ## Features
 
 *   **📋 Paste & Annotate:** Paste images directly from your clipboard or upload them from your disk.
 *   **✏️ Rich Annotation Tools:** Use arrows, rectangles, circles, text, counters, and a pixelate/blur tool to highlight or redact information.
+    <br/>
+    <img src="images/example-annotated-1764644482910.png" width="600" alt="Annotation Example" />
 *   **🤖 AI Analysis:** Ask Gemini to analyze your annotated image. Great for:
     *   Describing UI bugs.
     *   Explaining complex diagrams.
@@ -22,6 +26,7 @@
     *   Paste your key into the `Gemini Api Key` field.
 4.  **Usage:**
     *   Open the Command Palette (`Ctrl+Shift+P`) and run `Image Annotator: Annotate Image`.
+    *   ![Command Palette](images/annotate-in-command-menu.png)
     *   Or right-click in any editor and select `Annotate Image`.
     *   Paste an image (`Ctrl+V`) onto the canvas.
     *   Draw your annotations.

@@ -25,9 +25,8 @@ The project is structured as a monorepo-style setup where the core UI is a React
 *   **Root:** Contains the React application source code.
     *   `App.tsx`: Main application controller, state management, and UI layout.
     *   `components/`: UI components (`CanvasBoard`, `Toolbar`).
-    *   `services/`: External service integrations (`geminiService.ts`).
 *   **`vscode-extension/`:** Contains the VS Code extension wrapper.
-    *   `srcs/extension.ts`: Extension entry point that activates the Webview.
+    *   `srcs/extension.ts`: Extension entry point that activates the Webview and handles Gemini API requests.
     *   `webview-dist/`: Target directory where the built React app is placed.
 
 ## Development Workflow
@@ -48,7 +47,7 @@ To develop the UI in a browser environment with hot-reloading:
 ```bash
 npm run dev
 ```
-*   **Note:** Gemini API features require a `GEMINI_API_KEY` in `.env.local`.
+*   **Note:** AI/Gemini features are only available when running within the VS Code extension (they rely on the extension host).
 
 ### 3. Building for VS Code
 To prepare the React app for the extension (bundles into a single HTML file):
@@ -61,7 +60,7 @@ This populates `vscode-extension/webview-dist/index.html`.
 1.  Ensure the webview is built (step 3).
 2.  Open the project in VS Code.
 3.  Press `F5` to launch the Extension Development Host.
-4.  Use the command **"Annotate Image from Clipboard"** to open the tool.
+4.  Use the command **"Annotate Image"** to open the tool.
 
 ### 5. Packaging
 To create a `.vsix` file for installation:
