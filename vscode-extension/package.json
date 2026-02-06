@@ -55,14 +55,15 @@
   },
   "scripts": {
     "vscode:prepublish": "npm run compile",
-    "compile": "tsc -p ./",
-    "watch": "tsc -watch -p ./",
+    "compile": "esbuild ./srcs/extension.ts --bundle --outfile=dist/extension.js --external:vscode --format=cjs --platform=node",
+    "watch": "esbuild ./srcs/extension.ts --bundle --outfile=dist/extension.js --external:vscode --format=cjs --platform=node --watch",
     "package": "vsce package"
   },
   "dependencies": {
     "@google/genai": "^1.30.0"
   },
   "devDependencies": {
-    "@types/vscode": "^1.80.0"
+    "@types/vscode": "^1.80.0",
+    "esbuild": "^0.27.1"
   }
 }
