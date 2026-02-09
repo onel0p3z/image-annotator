@@ -3,5 +3,6 @@
 srcs/**
 tsconfig.json
 .gitignore
+package-lock.json
 *.map
 node_modules/**
