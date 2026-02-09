@@ -6,3 +6,6 @@ tsconfig.json
 package-lock.json
 *.map
 node_modules/**
+!webview-dist/**
+!dist/**
+!images/**
