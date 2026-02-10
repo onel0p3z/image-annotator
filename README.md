@@ -20,9 +20,26 @@
 
 ## ✨ Features
 
-*   **🎨 Rich Annotation Tools:** Draw arrows, shapes, text, and sequences directly on images.
-*   **🤖 AI-Powered Analysis:** Use Google's Gemini AI to find bugs, explain diagrams, or generate code from screenshots.
-*   **🔒 Privacy First:** Redact sensitive info with blur tools. API keys are stored securely in VS Code.
+### 🎨 Rich Annotation Tools
+Paste any image from your clipboard and start annotating immediately.
+*   **Draw:** Pen tool for freehand sketches.
+*   **Highlight:** Arrows, Rectangles, and Circles to point out details.
+*   **Context:** Add Text labels to explain your thoughts.
+*   **Sequence:** Use the Counter tool (`#`) to create step-by-step flows (1, 2, 3...).
+*   **Privacy:** Redact sensitive info with the Pixelate/Blur tool.
+
+![Annotation Example](images/example-annotated-1764644482910.png)
+
+### 🤖 AI-Powered Analysis (Gemini)
+Don't just draw—**ask**. Integrated with Google's Gemini AI (2.5 Flash), you can:
+*   **Find Bugs:** Highlight a UI glitch and ask AI "Why does this look wrong compared to standard Material Design?"
+*   **Explain Code:** Paste a diagram of an architecture and ask "Explain this data flow."
+*   **Generate Code:** Paste a screenshot of a UI element and ask "Generate the React/Tailwind code for this component."
+
+### 🔒 Privacy First
+*   Your images are processed locally for drawing.
+*   AI analysis is performed via your own personal API Key.
+*   Your API Key is stored securely in VS Code's encrypted secret storage/settings and is **never** exposed to the webview or third parties.
 
 ---
 
