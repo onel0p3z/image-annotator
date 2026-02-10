@@ -29,7 +29,7 @@
 ## 🚀 Getting Started (Users)
 
 ### 1. Installation
-Install "Image Annotator" from the VS Code Marketplace or download the `.vsix` file from the [latest GitHub Release](https://github.com/onel0p3z/image-annotator/releases).
+Install "Image Annotator" from the VS Code Marketplace or download the `.vsix` from releases.
 
 ### 2. Setup API Key
 To use AI features, you need a Gemini API Key:
@@ -44,50 +44,47 @@ To use AI features, you need a Gemini API Key:
 
 ---
 
-## ⚙️ Settings
-
-*   `image-annotator.geminiApiKey`: Your Google Gemini API Key.
-
----
-
 ## 🛠️ Development & Building (From Source)
 
-If you want to build the extension yourself or contribute, follow these steps.
+Follow these steps to build the extension from source.
 
 ### Prerequisites
 *   [Node.js](https://nodejs.org/) (v18+)
-*   VS Code (v1.80+)
+*   [VS Code](https://code.visualstudio.com/)
+*   `vsce` (for packaging): `npm install -g @vscode/vsce`
 
-### Setup & Build
-1.  **Clone the repo:**
-    ```bash
-    git clone https://github.com/onel0p3z/image-annotator.git
-    cd image-annotator
-    ```
-2.  **Install dependencies (Root & Extension):**
-    ```bash
-    npm install
-    cd vscode-extension && npm install && cd ..
-    ```
-3.  **Build the Webview (Frontend):**
-    ```bash
-    npm run build
-    ```
-4.  **Compile the Extension (Backend):**
-    ```bash
-    cd vscode-extension && npm run compile && cd ..
-    ```
+### 1. Clone & Install
+```bash
+git clone https://github.com/onel0p3z/image-annotator.git
+cd image-annotator
+npm install
+cd vscode-extension && npm install && cd ..
+```
 
-### Running the Extension
-1.  Open the project in VS Code.
-2.  Press `F5` to start the **Extension Development Host**.
-3.  Run the `Annotate Image` command in the new window.
+### 2. Build the Webview
+The annotator UI is a React app. It must be built into a single file for the extension to consume:
+```bash
+npm run build
+```
+This generates `vscode-extension/webview-dist/index.html`.
 
-### Packaging
+### 3. Build the Extension
+Compile the TypeScript extension host code:
+```bash
+cd vscode-extension
+npm run compile
+```
+
+### 4. Run & Debug
+1.  Open the root folder in VS Code.
+2.  Press `F5` to launch a new **Extension Development Host** window.
+3.  In the new window, use the command `Annotate Image` to test your changes.
+
+### 5. Packaging
 To create a `.vsix` file for manual installation:
 ```bash
 cd vscode-extension
-npx @vscode/vsce package
+vsce package
 ```
 
 ---
