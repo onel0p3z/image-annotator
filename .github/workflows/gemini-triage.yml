@@ -65,8 +65,8 @@ jobs:
           ${{ steps.get_labels.outputs.available_labels != '' }}
         env:
           AVAILABLE_LABELS: '${{ steps.get_labels.outputs.available_labels }}'
-          ISSUE_TITLE: '${{ github.event.issue.title }}'
-          ISSUE_BODY: '${{ github.event.issue.body }}'
+          ISSUE_TITLE: '${{ github.event.issue.title || github.event.pull_request.title }}'
+          ISSUE_BODY: '${{ github.event.issue.body || github.event.pull_request.body }}'
           ADDITIONAL_CONTEXT: '${{ inputs.additional_context }}'
         run: |-
           mkdir -p .gemini
@@ -94,7 +94,7 @@ jobs:
           gemini_cli_version: '${{ vars.GEMINI_CLI_VERSION }}'
           gemini_debug: '${{ fromJSON(vars.GEMINI_DEBUG || vars.DEBUG || vars.ACTIONS_STEP_DEBUG || false) }}'
           gemini_model: '${{ vars.GEMINI_MODEL }}'
-          github_issue_number: '${{ github.event.issue.number }}'
+          github_issue_number: '${{ github.event.issue.number || github.event.pull_request.number }}'
           google_api_key: '${{ secrets.GOOGLE_API_KEY }}'
           use_gemini_code_assist: '${{ vars.GOOGLE_GENAI_USE_GCA }}'
           use_vertex_ai: '${{ vars.GOOGLE_GENAI_USE_VERTEXAI }}'
@@ -161,7 +161,7 @@ jobs:
 
       - name: 'Apply labels'
         env:
-          ISSUE_NUMBER: '${{ github.event.issue.number }}'
+          ISSUE_NUMBER: '${{ github.event.issue.number || github.event.pull_request.number }}'
           AVAILABLE_LABELS: '${{ needs.triage.outputs.available_labels }}'
           SELECTED_LABELS: '${{ needs.triage.outputs.selected_labels }}'
         uses: 'actions/github-script@60a0d83039c74a4aee543508d2ffcb1c3799cdea' # ratchet:actions/github-script@v7.0.1
