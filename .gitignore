@@ -25,7 +25,5 @@ dist-ssr
 
 .gemini/*
 !.gemini/commands/
-!.gemini/context.json
-!.gemini/context/
 gha-creds-*.json
 *.vsix
