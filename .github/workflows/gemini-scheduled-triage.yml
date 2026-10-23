@@ -136,6 +136,7 @@ jobs:
                 }
               },
               "model": {
+                "name": "flash-lite",
                 "maxSessionTurns": 25
               },
               "modelConfigs": {
