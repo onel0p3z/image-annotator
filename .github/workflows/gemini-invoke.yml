@@ -47,7 +47,7 @@ jobs:
           TITLE: '${{ github.event.pull_request.title || github.event.issue.title }}'
           DESCRIPTION: '${{ github.event.pull_request.body || github.event.issue.body }}'
           EVENT_NAME: '${{ github.event_name }}'
-          IS_PULL_REQUEST: '${{ !!github.event.pull_request }}'
+          IS_PULL_REQUEST: '${{ !!(github.event.pull_request || github.event.issue.pull_request) }}'
           ISSUE_NUMBER: '${{ github.event.pull_request.number || github.event.issue.number }}'
           REPOSITORY: '${{ github.repository }}'
           ADDITIONAL_CONTEXT: '${{ inputs.additional_context }}'
@@ -57,7 +57,7 @@ jobs:
             --arg title "${TITLE}" \
             --arg description "${DESCRIPTION}" \
             --arg event_name "${EVENT_NAME}" \
-            --arg is_pull_request "${IS_PULL_REQUEST}" \
+            --argjson is_pull_request "${IS_PULL_REQUEST}" \
             --arg issue_number "${ISSUE_NUMBER}" \
             --arg repository "${REPOSITORY}" \
             --arg additional_context "${ADDITIONAL_CONTEXT}" \
@@ -78,8 +78,8 @@ jobs:
           gemini_cli_version: '${{ vars.GEMINI_CLI_VERSION }}'
           gemini_debug: '${{ fromJSON(vars.GEMINI_DEBUG || vars.DEBUG || vars.ACTIONS_STEP_DEBUG || false) }}'
           gemini_model: '${{ vars.GEMINI_MODEL }}'
-          github_issue_number: '${{ github.event.issue.number }}'
-          github_pr_number: '${{ github.event.pull_request.number }}'
+          github_issue_number: '${{ (!github.event.issue.pull_request && github.event.issue.number) || "" }}'
+          github_pr_number: '${{ github.event.pull_request.number || (github.event.issue.pull_request && github.event.issue.number) || "" }}'
           google_api_key: '${{ secrets.GOOGLE_API_KEY }}'
           use_gemini_code_assist: '${{ vars.GOOGLE_GENAI_USE_GCA }}'
           use_vertex_ai: '${{ vars.GOOGLE_GENAI_USE_VERTEXAI }}'
