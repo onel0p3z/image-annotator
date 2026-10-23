@@ -130,8 +130,27 @@ jobs:
           workflow_name: 'gemini-scheduled-triage'
           settings: |-
             {
+              "context": {
+                "fileFiltering": {
+                  "respectGitIgnore": false
+                }
+              },
               "model": {
                 "maxSessionTurns": 25
+              },
+              "modelConfigs": {
+                "customAliases": {
+                  "chat-base-3": {
+                    "extends": "chat-base",
+                    "modelConfig": {
+                      "generateContentConfig": {
+                        "thinkingConfig": {
+                          "thinkingLevel": "LOW"
+                        }
+                      }
+                    }
+                  }
+                }
               },
               "telemetry": {
                 "enabled": true,
