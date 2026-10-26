@@ -22,13 +22,18 @@ jobs:
     timeout-minutes: 7
     outputs:
       available_labels: '${{ steps.get_labels.outputs.available_labels }}'
-      selected_labels: '${{ env.SELECTED_LABELS }}'
+      selected_labels: '${{ steps.gemini_analysis.outputs.summary }}'
     permissions:
       contents: 'read'
       id-token: 'write'
       issues: 'read'
       pull-requests: 'read'
     steps:
+      - name: 'Checkout repository'
+        uses: 'actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8' # ratchet:actions/checkout@v5
+        with:
+          persist-credentials: 'false'
+
       - name: 'Get repository labels'
         id: 'get_labels'
         uses: 'actions/github-script@60a0d83039c74a4aee543508d2ffcb1c3799cdea' # ratchet:actions/github-script@v7.0.1
@@ -55,6 +60,23 @@ jobs:
             core.info(`Found ${labelNames.length} labels: ${labelNames.join(', ')}`);
             return labelNames;
 
+      - name: 'Prepare prompt context'
+        if: |-
+          ${{ steps.get_labels.outputs.available_labels != '' }}
+        env:
+          AVAILABLE_LABELS: '${{ steps.get_labels.outputs.available_labels }}'
+          ISSUE_TITLE: '${{ github.event.issue.title || github.event.pull_request.title }}'
+          ISSUE_BODY: '${{ github.event.issue.body || github.event.pull_request.body }}'
+          ADDITIONAL_CONTEXT: '${{ inputs.additional_context }}'
+        run: |-
+          mkdir -p .gemini
+          jq -n \
+            --arg labels "${AVAILABLE_LABELS}" \
+            --arg title "${ISSUE_TITLE}" \
+            --arg body "${ISSUE_BODY}" \
+            --arg additional_context "${ADDITIONAL_CONTEXT}" \
+            '{available_labels: $labels, issue_title: $title, issue_body: $body, additional_context: $additional_context}' > .gemini/context.json
+
       - name: 'Run Gemini issue analysis'
         id: 'gemini_analysis'
         if: |-
@@ -62,9 +84,7 @@ jobs:
         uses: 'google-github-actions/run-gemini-cli@v0' # ratchet:exclude
         env:
           GITHUB_TOKEN: '' # Do NOT pass any auth tokens here since this runs on untrusted inputs
-          ISSUE_TITLE: '${{ github.event.issue.title }}'
-          ISSUE_BODY: '${{ github.event.issue.body }}'
-          AVAILABLE_LABELS: '${{ steps.get_labels.outputs.available_labels }}'
+          GEMINI_CLI_TRUST_WORKSPACE: 'true'
         with:
           gcp_location: '${{ vars.GOOGLE_CLOUD_LOCATION }}'
           gcp_project_id: '${{ vars.GOOGLE_CLOUD_PROJECT }}'
@@ -72,8 +92,9 @@ jobs:
           gcp_workload_identity_provider: '${{ vars.GCP_WIF_PROVIDER }}'
           gemini_api_key: '${{ secrets.GEMINI_API_KEY }}'
           gemini_cli_version: '${{ vars.GEMINI_CLI_VERSION }}'
-          gemini_debug: '${{ fromJSON(vars.DEBUG || vars.ACTIONS_STEP_DEBUG || false) }}'
+          gemini_debug: '${{ fromJSON(vars.GEMINI_DEBUG || vars.DEBUG || vars.ACTIONS_STEP_DEBUG || false) }}'
           gemini_model: '${{ vars.GEMINI_MODEL }}'
+          github_issue_number: '${{ github.event.issue.number || github.event.pull_request.number }}'
           google_api_key: '${{ secrets.GOOGLE_API_KEY }}'
           use_gemini_code_assist: '${{ vars.GOOGLE_GENAI_USE_GCA }}'
           use_vertex_ai: '${{ vars.GOOGLE_GENAI_USE_VERTEXAI }}'
@@ -81,8 +102,28 @@ jobs:
           workflow_name: 'gemini-triage'
           settings: |-
             {
+              "context": {
+                "fileFiltering": {
+                  "respectGitIgnore": false
+                }
+              },
               "model": {
+                "name": "flash-lite",
                 "maxSessionTurns": 25
+              },
+              "modelConfigs": {
+                "customAliases": {
+                  "chat-base-3": {
+                    "extends": "chat-base",
+                    "modelConfig": {
+                      "generateContentConfig": {
+                        "thinkingConfig": {
+                          "thinkingLevel": "LOW"
+                        }
+                      }
+                    }
+                  }
+                }
               },
               "telemetry": {
                 "enabled": true,
@@ -90,12 +131,10 @@ jobs:
                 "outfile": ".gemini/telemetry.log"
               },
               "tools": {
-                "core": [
-                  "run_shell_command(echo)"
-                ]
+                "core": []
               }
             }
-          prompt: '/gemini-triage'
+          prompt: '/repo-triage'
 
   label:
     runs-on: 'ubuntu-latest'
@@ -122,7 +161,7 @@ jobs:
 
       - name: 'Apply labels'
         env:
-          ISSUE_NUMBER: '${{ github.event.issue.number }}'
+          ISSUE_NUMBER: '${{ github.event.issue.number || github.event.pull_request.number }}'
           AVAILABLE_LABELS: '${{ needs.triage.outputs.available_labels }}'
           SELECTED_LABELS: '${{ needs.triage.outputs.selected_labels }}'
         uses: 'actions/github-script@60a0d83039c74a4aee543508d2ffcb1c3799cdea' # ratchet:actions/github-script@v7.0.1
@@ -138,7 +177,11 @@ jobs:
 
             // Parse the label as a CSV, reject invalid ones - we do this just
             // in case someone was able to prompt inject malicious labels.
-            const selectedLabels = (process.env.SELECTED_LABELS || '').split(',')
+            const rawSelectedLabels = (process.env.SELECTED_LABELS || '')
+              .replace(/^```[a-zA-Z0-9_-]*\s*/m, '')
+              .replace(/```\s*$/m, '')
+              .trim()
+            const selectedLabels = rawSelectedLabels.split(',')
               .map((label) => label.trim())
               .filter((label) => availableLabels.includes(label))
               .sort()
