@@ -73,3 +73,7 @@ vsce package
 *   **State Management:** `App.tsx` serves as the central state container for tool selection, history (undo/redo), and image data.
 *   **Canvas Logic:** Canvas interactions are encapsulated in `CanvasBoard.tsx`.
 *   **Styling:** standard Tailwind utility classes are used, with custom colors defined for IDE theming (e.g., `bg-ide-bg`).
+
+## Documented Solutions
+
+`docs/solutions/` — documented solutions to past problems (bugs, best practices, workflow patterns), organized by category with YAML frontmatter (`module`, `tags`, `problem_type`). Relevant when implementing or debugging in documented areas.
